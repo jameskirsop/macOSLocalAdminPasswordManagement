@@ -19,9 +19,9 @@ openssl rsa -in private.pem -out private_unencrypted.pem -outform PEM
 8. Copy the contents of `webservice/private.pem` in to a Password Management tool of your choice for safe keeping.
 
 ## The Web Service
-We've written this using the bottle framework, which we find the easiest tool to quickly develop a microservice in. Inside `/webservice` you'll find a requirements.txt which you can use to setup a Python virtualenv. `wsgi.py` expects your `venv` directory be in the same directory. Copy the contents of `/webservice` to the path your web server is configured to serve from. 
+We've written this using the bottle framework, which we find the easiest tool to quickly develop a microservice in. Inside `/webservice` you'll find a requirements.txt which you can use to setup a Python3 virtualenv. `wsgi.py` expects your `venv` directory be in the same directory. Copy the contents of `/webservice` to the path your web server is configured to serve from. Additionally, `wsgi.py` is written to look for a python3.7 `site-packages` folder, so if you're deploying to a different python version, you will want to modify the environment path set in that file.
 
-Here's some sample Apache Configuration that should get you going. Note: we typically create a user account on our web server for each microservice. In this example the account name is `macospassword`.
+Here's some sample Apache Configuration that should get you going. Note: we typically create a user account on our web server for each microservice. In this example the account name is `macospassword` and we also have `chmod +x /home/macospassword` so that Apache can search the path.
 ```
 <VirtualHost>
     ServerName macospassword.internal.domain.com
@@ -31,7 +31,7 @@ Here's some sample Apache Configuration that should get you going. Note: we typi
     SSLCertificateChainFile /path/to/chain
 
     WSGIDaemonProcess macOSPasswordDecrypter user=macospassword group=macospassword processes=1 threads=5 home=/home/macospassword
-    WSGIScriptAlias /macospassword /home/macospassword/wsgi.app
+    WSGIScriptAlias /macospassword /home/macospassword/wsgi.py
 
     <Location />
             WSGIProcessGroup macOSPasswordDecrypter

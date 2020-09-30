@@ -1,7 +1,7 @@
 import os, sys, site, pathlib
 print(pathlib.Path(__file__).parent.absolute())
 
-site.addsitedir(f'{pathlib.Path(__file__).parent.absolute()}/venv/lib/python3.6/site-packages')
+site.addsitedir(f'{pathlib.Path(__file__).parent.absolute()}/venv/lib/python3.7/site-packages')
 
 os.chdir(os.path.dirname(__file__))
 
