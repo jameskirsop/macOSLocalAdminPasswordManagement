@@ -10,11 +10,11 @@ openssl genrsa -des3 -out private.pem 2048
 openssl rsa -in private.pem -outform PEM -pubout -out public.pem
 openssl rsa -in private.pem -out private_unencrypted.pem -outform PEM
 ```
-2. Build the deployment script. Because macOS uses a _special_ version of `sed`, you'll need to add a `\` character to the end of each line in your `public.pem` file. Then run `./build.sh` to generate your `setLocalAdmin.py` script ready for deployment via your MDM tool of choice. This will reside in the project root, and also move your private key to `/webservice` for deployment.
+2. Build the deployment script. Because macOS uses a [_special_ version of `sed`](https://stackoverflow.com/questions/24275070/sed-not-giving-me-correct-substitute-operation-for-newline-with-mac-difference), you'll need to add a `\` character to the end of each line in your `public.pem` file. Then run `./build.sh` to generate your `setLocalAdmin.py` script ready for deployment via your MDM tool of choice. This will reside in the project root, and also move your private key to `/webservice` for deployment.
 3. Run `python3 -m pip install pycryptodome keyring` on the target machine
 4. Deploy `setLocalAdmin.py` to the target machine
 5. Configure a user account `localadmin` on the target
-6. Run `python3 setLocalAdmin.py --initialPassword <initialPassword>` on the machine, replacing `<initialPassword>` with the password you've specified in step 5
+6. Run `python3 setLocalAdmin.py --initialPassword <initialPassword>` on the machine, replacing `<initialPassword>` with the password you've specified in step 5. See below on how to do this via an Addigy Command.
 7. Set up running `python3 setLocalAdmin.py` as a recurring task at an interval of your choosing via your MDM tool
 8. Copy the contents of `webservice/private.pem` in to a Password Management tool of your choice for safe keeping.
 
@@ -45,8 +45,17 @@ Here's some sample Apache Configuration that should get you going. Note: we typi
 </VirtualHost>
 ```
 
-## Using with Addigy
-We've deployed this using an Addigy 'Script' with the following:
+## Using the Script with Addigy
+To kick off the initial Password Rotation, you'll want to create a 'Script' like this:
+```
+#!/bin/bash
+python3 - --initialPassword <Your_Policy_Defined_Password_Here> << EOF
+#!/usr/bin/python3
+<Contents of setLocalAdmin.py>
+EOF 
+```
+
+You then want to deploy this using an Addigy 'Script' as a Maintenance Task on a weekly schedule to rotate the password:
 ```
 #!/bin/bash
 python3 << EOF
@@ -55,7 +64,7 @@ python3 << EOF
 EOF 
 ```
 
-# Addigy Facts and JAMF Extension Attributes
+## Addigy Facts and JAMF Extension Attributes
 In `addigyFactScripts` you'll find two scripts that can be used as Custom Facts or Extension Attributes for monitoring of the target machine. One to retrieve the encrypted password, the other to let you know how long it has been since the password was last rotated. If the Encrypted Password script returns an empty string, it should be assumed there was an error in running the rotation process that needs manual intervention.
 
 ## Thanks

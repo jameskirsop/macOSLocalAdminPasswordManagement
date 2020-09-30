@@ -127,3 +127,4 @@ dmypy.json
 # Making sure we don't accidentally store keys in Git
 *.pem
 /setLocalAdmin.py
+.vscode
