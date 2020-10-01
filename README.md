@@ -13,7 +13,7 @@ openssl rsa -in private.pem -outform PEM -pubout -out public.pem
 openssl rsa -in private.pem -out private_unencrypted.pem -outform PEM
 ```
 2. Build the deployment script. Because macOS uses a [_special_ version of `sed`](https://stackoverflow.com/questions/24275070/sed-not-giving-me-correct-substitute-operation-for-newline-with-mac-difference), you'll need to add a `\` character to the end of each line in your `public.pem` file. Then run `./build.sh` to generate your `setLocalAdmin.py` script ready for deployment via your MDM tool of choice. This will reside in the project root, and also move your private key to `/webservice` for deployment.
-3. Run `python3 -m pip install pycryptodome keyring` on the target machine
+3. Run `python3 -m pip install pycryptodome keyring` on the target machine. See 'Using the Script with Addigy' below on how to automate this nd the following 3 steps.
 4. Deploy `setLocalAdmin.py` to the target machine
 5. Configure a user account `localadmin` on the target
 6. Run `python3 setLocalAdmin.py --initialPassword <initialPassword>` on the machine, replacing `<initialPassword>` with the password you've specified in step 5. See below on how to do this via an Addigy Command.
@@ -51,6 +51,7 @@ Here's some sample Apache Configuration that should get you going. Note: we typi
 To kick off the initial Password Rotation, you'll want to create a 'Script' like this:
 ```
 #!/bin/bash
+python3 -m pip install pycryptodome keyring
 python3 - --initialPassword <Your_Policy_Defined_Password_Here> << EOF
 #!/usr/bin/python3
 <Contents of setLocalAdmin.py>
@@ -66,7 +67,7 @@ python3 << EOF
 EOF 
 ```
 
-If you're on a machine prior to 10.15 / Catalina, you'll want to deploy Python3 and then adjust the first few lines of the above scripts to look something like:
+If you're using this on a mix of pre and post 10.15 / Catalina machines, you'll want to deploy Python3 and then adjust the first few lines of the above scripts to look something like:
 ```
 if [ -e "/usr/local/bin/python3" ]; then
     path=/usr/local/bin/python3
