@@ -1,6 +1,8 @@
 # macOSLocalAdminPasswordManagement
 
-This project has been written to allow for the rotation of a 'localadmin' account password on macOS 10.15 and newer (as Python3 is required). It uses RSA public/private key encryption to allow secure escrow of the encrypted password to an MDM platform and has a simple micro web service that can be deployed via WSGI to allow password decryption.
+This project has been written to allow for the rotation of a 'localadmin' account password on macOS 10.15 and newer (as Python3 is required*). It uses RSA public/private key encryption to allow secure escrow of the encrypted password to an MDM platform and has a simple micro web service that can be deployed via WSGI to allow password decryption.
+
+_*Python3 can be installed on machine prior to 10.15. For backwards compatibility We deploy python3 to all machines 10.14 or older via installing the .pkg available from the [Python download page](https://www.python.org/downloads/mac-osx/) via a Custom Software package in Addigy. This does cause some complications and so we'll probably deprecate this support in the near future._ 
 
 ## Instructions for Deployment to the Target Machine
 
@@ -62,6 +64,16 @@ python3 << EOF
 #!/usr/bin/python3
 <Contents of setLocalAdmin.py>
 EOF 
+```
+
+If you're on a machine prior to 10.15 / Catalina, you'll want to deploy Python3 and then adjust the first few lines of the above scripts to look something like:
+```
+if [ -e "/usr/local/bin/python3" ]; then
+    path=/usr/local/bin/python3
+else
+    path=python3
+fi
+$path << EOF
 ```
 
 ## Addigy Facts and JAMF Extension Attributes
