@@ -10,7 +10,7 @@ def fact():
     try:
         timestamp = os.path.getmtime('/Users/Shared/.encryptedLocalAdminPassword')
     except FileNotFoundError:
-        timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now().timestamp()
     datetime.datetime.fromtimestamp(timestamp)
     difference = datetime.datetime.now() - datetime.datetime.fromtimestamp(timestamp)
     return difference.days
