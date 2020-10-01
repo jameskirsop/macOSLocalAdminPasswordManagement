@@ -23,8 +23,6 @@ with open('/usr/share/dict/words') as f:
     words = [word.strip() for word in f]
     new_password = '-'.join(secrets.choice(words) for i in range(4))
 
-print(new_password)
-
 # Set the old password
 if args.initialPassword:
     old_password = args.initialPassword
@@ -32,8 +30,6 @@ else:
     old_password = kr.get_password('addigy','localadmin')
 if not old_password:
     raise Exception
-
-print(old_password)
 
 # Attempt to Reset the Password
 process = subprocess.Popen(
