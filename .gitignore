@@ -128,3 +128,4 @@ dmypy.json
 *.pem
 /setLocalAdmin.py
 .vscode
+.DS_Store
