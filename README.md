@@ -1,6 +1,6 @@
 # macOSLocalAdminPasswordManagement
 
-This project has been written to allow for deployment of a unqiue and rotation of a 'localadmin' account password on macOS 11 and newer. It uses RSA public/private key encryption to allow secure escrow of the encrypted password to an MDM platform and has a simple micro web service that can be deployed via WSGI to allow password decryption.
+This project has been written to allow for deployment of a unique 'localadmin' account password on macOS 11 and newer and rotation of that password. It uses RSA public/private key encryption to allow secure escrow of the encrypted password to an MDM platform and has a simple micro web service that can be deployed via WSGI to allow password decryption.
 
 _This script will work on 10.15, but will not grant a SecureToken because Dialog requires macOS 11. Use the `--noGrantSecureToken` flag._
 
