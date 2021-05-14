@@ -5,14 +5,15 @@ This project has been written to allow for deployment of a unqiue and rotation o
 _This script will work on 10.15, but will not grant a SecureToken because Dialog requires macOS 11. Use the `--noGrantSecureToken` flag._
 
 ## Requirements
-- [Dialog](https://github.com/bartreardon/dialog-public) installed on the target machine, if you wish to use the script for enabling a SecureToken on the localadmin account.
+- [Dialog](https://github.com/bartreardon/dialog-public) installed on the target machine, if you wish to use the script for enabling a SecureToken on the localadmin account. See further notes on how we use Dialog below.
 - [managed_python3](https://github.com/macadmins/python)
 
 ## Instructions for Deployment to the Target Machine
-1. Generate your RSA Keys and build the deployment script. You will be prompted for an RSA Passphrase serveral times to create the Private key and then an unencrypted copy for the webservice. Run `./buildDeployment.sh` to generate your `setLocalAdmin.py` script ready for deployment via your MDM tool of choice (see below for use with Addigy). This will reside in the project root, and also move your unencrypted private key to `/webservice` for deployment.
-3. Copy the contents of `webservice/private.pem` in to a Password Management tool of your choice for safe keeping so that you will be able to decrypt passwords if something happens to your webserver.
-4. Deploy [managed_python3](https://github.com/macadmins/python) along with the pex virtualenv's (venv_macOS-release-arch) to the machine
-5. Symlink /usr/local/bin/managed_py3env to the appropriate pex file for the system. `deployPexEnv.sh` has a sample bash script that can do this for you as part of the `managed_python3` installation if you're using Addigy as your MDM tool.
+1. Run `./buildDeployment.sh` to generate your RSA Keys and build the deployment script. You will be prompted for an RSA Passphrase serveral times to create the Private key and then an unencrypted copy for the webservice. The built `setLocalAdmin.py` will reside in your project root ready for deployment via your MDM tool of choice (see below for use with Addigy). Your unencrypted private key will also be moved to `/webservice` for deployment.
+2. Copy the contents of `webservice/private.pem` in to a Password Management tool of your choice for safe keeping so that you will be able to decrypt passwords if something happens to your webserver.
+3. Deploy [managed_python3](https://github.com/macadmins/python) along with the pex virtualenv's (venv_macOS-release-arch) to the machine
+4. Symlink /usr/local/bin/managed_py3env to the appropriate pex file for the system. `deployPexEnv.sh` has a sample bash script that can do this for you as part of the `managed_python3` installation if you're using Addigy as your MDM tool.
+5. Deploy Dialog inline with the recommendations found below.
 6. Deploy an administrative account with username 'localadmin' and a complex password of your choosing via your MDM tool
 
 
@@ -22,6 +23,10 @@ Pass the password that you set via your MDM tool for the localadmin account. Thi
 
 `--noGrantSecureToken`
 Useful for 10.15 or older machines where this script does not support prompting the user with an interactive dialog to get credentials to grant a Secure Token to the localadmin user. 
+
+
+### Dialog
+In addition to Dialog being installed, we expect a banner image file to be located at `/Library/Application\ Support/Dialog/dialog_banner_small.png`. The dimensions for this image are 1417x205. **Without this file, Dialog will fail to display the user prompt for the Grant Secure Token action.**
 
 
 ## The Web Service
@@ -77,4 +82,4 @@ We've pre-built Pex environments based on the contents of `pexEnvironments/requi
 ## Thanks
 Some of the design of this project (namely storing the password in the System Keychain) came from the great [macOSLAPS project](https://github.com/joshua-d-miller/macOSLAPS). If you're running your macOS endpoints bound to AD, then check that out instead of this project.
 
-Thanks also to @bartreardon for adding some features to Dialog and letting me bug him with questions on the MacAdmins Slack.
+Thanks also to [@bartreardon](http://github.com/bartreardon) for adding some features to Dialog and letting me bug him with questions on the MacAdmins Slack.
