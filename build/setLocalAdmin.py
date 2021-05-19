@@ -71,6 +71,8 @@ for line in p_error.decode('utf-8').splitlines():
 
 if not success:
     print(p_error)
+    with open('/Users/Shared/.encryptedLocalAdminPassword','w') as f:
+        f.write('')
     raise Exception
 
 # Encrypt the Password
